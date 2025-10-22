@@ -12,9 +12,9 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   Completer<GoogleMapController>_controller = Completer();
-    static CameraPosition _googlePlex = const CameraPosition(target: LatLng(23.7808875, 90.4043122),zoom: 14.4746);
+    static final CameraPosition _googlePlex = const CameraPosition(target: LatLng(23.7808875, 90.4043122),zoom: 14.4746);
     List<Marker>_marker = [];
-    List<Marker>_list=const[
+    final List<Marker>_list=const[
       Marker(markerId: MarkerId('1'),
       position: LatLng(23.7808875, 90.4043122),
       infoWindow: InfoWindow(
@@ -37,13 +37,27 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: GoogleMap(initialCameraPosition: _googlePlex,
-       markers: Set<Marker>.of(_marker),
-        onMapCreated: (GoogleMapController controller){
-        _controller.complete(controller);
-        },
-        
+        body: SafeArea(
+          child: GoogleMap(initialCameraPosition: _googlePlex,
+                 markers: Set<Marker>.of(_marker),
+          onMapCreated: (GoogleMapController controller){
+          _controller.complete(controller);
+          },
+          
+          ),
         ),
+        floatingActionButton: FloatingActionButton(child: Icon(Icons.location_disabled_outlined),onPressed: ()async{
+          GoogleMapController controller =await _controller.future;
+          controller.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(35.6762, 139.6503),
+          zoom: 14
+          )
+          ));
+          setState(() {
+            
+          });
+
+        }),
     );
   }
 }
